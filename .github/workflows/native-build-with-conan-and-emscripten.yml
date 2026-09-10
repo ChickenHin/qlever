@@ -1,13 +1,13 @@
 name: "Native build to WebAssembly using Conan and Emscripten"
 
 on:
-  push:
-    # Pushes to master publish a dev version of the `@ad-freiburg/qlever` npm
-    # package under
-    # the `next` dist-tag; version tags publish the release under `latest`
-    # (see the `publish` job below).
-    branches: [ master ]
-    tags: [ "v*" ]
+  # push:
+  #   # Pushes to master publish a dev version of the `@ad-freiburg/qlever` npm
+  #   # package under
+  #   # the `next` dist-tag; version tags publish the release under `latest`
+  #   # (see the `publish` job below).
+  #   branches: [ master ]
+  #   tags: [ "v*" ]
   pull_request:
     branches: [ master ]
   merge_group:
