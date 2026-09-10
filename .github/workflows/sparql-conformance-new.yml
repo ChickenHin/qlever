@@ -1,8 +1,8 @@
 name: sparql-conformance-new
 
 on:
-  push:
-    branches: [ master ]
+  # push:
+  #   branches: [ master ]
   pull_request:
     branches: [ master ]
   merge_group:
