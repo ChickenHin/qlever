@@ -1,8 +1,8 @@
 name: Native build with conan on MacOS
 
 on:
-  push:
-    branches: [ master ]
+  # push:
+  #   branches: [ master ]
   pull_request:
     branches: [ master ]
   merge_group:
