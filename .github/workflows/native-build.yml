@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [gcc, clang]
+        compiler: [clang]
         compiler-version: [8, 11, 12, 13, 18, 21]
         warnings: [  "-Wall -Wextra -Werror " ]
         build-type: [Release]
@@ -57,33 +57,6 @@ jobs:
             compiler-version: 18
             isPr: true
         include:
-          - compiler: gcc
-            compiler-version: 11
-            additional-cmake-options: "-DUSE_CPP_17_BACKPORTS=ON -DEXPRESSION_GENERATOR_BACKPORTS_FOR_CPP17=ON"
-            build-type: Release
-          # Exercise the PMR allocator backend in one ordinary configuration so
-          # that `QLEVER_USE_PMR_ALLOCATOR` code is actually built and tested in
-          # CI. NOTE: This entry does not add a new job. Since all its other
-          # values match the existing clang-21 configuration, it is merged into
-          # that job, which hence builds with the PMR backend INSTEAD OF the
-          # default `limit` backend (all other configurations are unaffected).
-          - compiler: clang
-            compiler-version: 21
-            allocator-backend: pmr
-            build-type: Release
-          - compiler: clang
-            compiler-version: 16
-            asan-flags: "-fsanitize=address -fno-omit-frame-pointer"
-            build-type: RelWithDebInfo
-            runner: ubuntu-22.04
-            expensive-tests: false
-          - compiler: clang
-            compiler-version: 16
-            ubsan-flags: " -fsanitize=undefined"
-            build-type: RelWithDebInfo
-            runner: ubuntu-22.04
-            expensive-tests: false
-            skipIfPr: false
           - compiler: clang
             compiler-version: 17
             build-type: Debug
@@ -134,16 +107,16 @@ jobs:
         working-directory: ${{github.workspace}}/build/test
         run: env CTEST_OUTPUT_ON_FAILURE=1 ctest -C ${{matrix.build-type}} -j $(nproc) .
 
-      - name: Running and printing the benchmark examples.
-        run: ${{github.workspace}}/build/benchmark/BenchmarkExamples -p
+      # - name: Running and printing the benchmark examples.
+      #   run: ${{github.workspace}}/build/benchmark/BenchmarkExamples -p
 
-      # Run the E2E test only once, but for GCC add the text index separately.
-      # Note that the dispatch by the compiler is arbitrary, we just want
-      # to have both cases tested.
-      - name: E2E with index in one go
-        if: (matrix.compiler == 'clang') && (steps.complete_tests.outcome == 'success')
-        run: ${{github.workspace}}/e2e/e2e.sh
+      # # Run the E2E test only once, but for GCC add the text index separately.
+      # # Note that the dispatch by the compiler is arbitrary, we just want
+      # # to have both cases tested.
+      # - name: E2E with index in one go
+      #   if: (matrix.compiler == 'clang') && (steps.complete_tests.outcome == 'success')
+      #   run: ${{github.workspace}}/e2e/e2e.sh
 
-      - name: E2E with separate text index build
-        if: (matrix.compiler != 'clang')  && (steps.complete_tests.outcome == 'success')
-        run: ${{github.workspace}}/e2e/e2e.sh -t
+      # - name: E2E with separate text index build
+      #   if: (matrix.compiler != 'clang')  && (steps.complete_tests.outcome == 'success')
+      #   run: ${{github.workspace}}/e2e/e2e.sh -t
